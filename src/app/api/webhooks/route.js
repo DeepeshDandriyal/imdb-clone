@@ -1,14 +1,14 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { createOrUpdateUser, deleteUser } from "@/lib/actions/user";
-import { clerkClient } from "@clerk/nextjs/dist/types/server";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export async function POST(req) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET;
 
   if (!SIGNING_SECRET) {
     throw new Error(
-      "Error: Please add SIGNING_SECRET from Clerk Dashboard to .env or .env"
+      "Error: Please add SIGNING_SECRET from Clerk Dashboard to .env or .env.local"
     );
   }
 
@@ -50,8 +50,8 @@ export async function POST(req) {
 
   // Do something with payload
   // For this guide, log payload to console
-  const { id } = evt.data;
-  const eventType = evt.type;
+  const { id } = evt?.data;
+  const eventType = evt?.type;
 
   if (eventType === "user.created" || eventType === "user.updated") {
     const { first_name, last_name, image_url, email_addresses } = evt?.data;
@@ -72,11 +72,11 @@ export async function POST(req) {
             },
           });
         } catch (error) {
-          console.log("Error: Could not update user metadata", error);
+          console.log("Error: Could not update user metadata:", error);
         }
       }
     } catch (error) {
-      console.log("Error: Could not create or update user", error);
+      console.log("Error: Could not create or update user:", error);
       return new Response("Error: Could not create or update user", {
         status: 400,
       });
@@ -87,7 +87,7 @@ export async function POST(req) {
     try {
       await deleteUser(id);
     } catch (error) {
-      console.log("Error: Could not delete user", error);
+      console.log("Error: Could not delete user:", error);
       return new Response("Error: Could not delete user", {
         status: 400,
       });
