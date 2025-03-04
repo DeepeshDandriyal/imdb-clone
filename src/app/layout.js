@@ -4,6 +4,8 @@ import Header from "@/components/Header";
 import ThemeCom from "@/components/ThemeCom";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
+// import SearchBox from '@/components/SearchBox';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -22,13 +24,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+      <html lang="en" suppressHydrationWarning>
+        <body>
           <ThemeCom>
             <Header />
             <Navbar />
+            {/* <SearchBox /> */}
             {children}
           </ThemeCom>
         </body>
